@@ -39,9 +39,15 @@ modules = {
     }
 
     'jquery-bbq' {
-        dependsOn 'jquery'
+        dependsOn 'jquery','jquery-migrate'
 
         resource url: '/vendor/jquery-bbq/jquery.ba-bbq-1.2.1.js'
+    }
+
+    'jquery-migrate' {
+        dependsOn 'jquery'
+
+        resource url: '/vendor/jquery-migrate/jquery-migrate-1.4.1.min.js'
     }
 
     'map' {
@@ -52,7 +58,7 @@ modules = {
     }
 
     'google-maps-api' {
-        resource  url: 'https://maps.google.com/maps/api/js?sensor=false', attrs: [type: "js"], disposition: 'head'
+        resource  url: "https://maps.google.com/maps/api/js?key=${grailsApplication.config.google.apikey}", attrs: [type: "js"], disposition: 'head'
     }
 
     charts {

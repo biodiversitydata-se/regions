@@ -901,7 +901,7 @@ var RegionMap = function (config) {
             query = region.buildBiocacheQuery(currentState.q, 0, true);
         var prms = [
             "FORMAT=" + overlayFormat,
-            "LAYERS=ALA%3Aoccurrences",
+            "LAYERS=ALA:occurrences",
             "STYLES=",
             "BGCOLOR=0xFFFFFF",
             'q=' + query.q,
@@ -909,6 +909,7 @@ var RegionMap = function (config) {
             "fq=rank:(species OR subspecies)",
             'CQL_FILTER=',
             "symsize=3",
+            "OUTLINE=false",
             "ENV=color:FF0000;name:circle;size:3;opacity:" + getOccurrenceOpacity(),
             "EXCEPTIONS=application-vnd.ogc.se_inimage"
         ];
