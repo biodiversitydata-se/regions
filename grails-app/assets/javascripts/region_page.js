@@ -156,7 +156,8 @@ var region = {
         if (!regionWidget.isDefaultFromYear() || !regionWidget.isDefaultToYear()) {
             var fromPhrase = regionWidget.isDefaultFromYear() ? '*' : regionWidget.getCurrentState().from + "-01-01T00:00:00Z";
             var toPhrase = regionWidget.isDefaultToYear() ? "*" : regionWidget.getCurrentState().to + "-12-31T23:59:59Z";
-            return "occurrence_year:[" + fromPhrase + " TO " + toPhrase + "]";
+            // SBDI: unencoded square brackets fail on our server
+            return "occurrence_year:%5B" + fromPhrase + " TO " + toPhrase + "%5D";
         } else {
             return '';
         }
