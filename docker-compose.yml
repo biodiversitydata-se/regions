@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+
+  regions:
+    image: sbdi/regions-dev
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    volumes:
+      - ./sbdi/data/config/regions-config.properties:/data/regions/config/regions-config.properties
