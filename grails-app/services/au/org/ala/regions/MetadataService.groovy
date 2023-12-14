@@ -235,6 +235,10 @@ class MetadataService {
      * @return
      */
     String buildAlertsUrl(Map region) {
+        // SBDI: this is to make sure the Alerts button isn't displayed on region.gsp
+        if (!ALERTS_URL) {
+            return "";
+        }
         String url = "${ALERTS_URL}/webservice/createBiocacheNewRecordsAlert"
         String searchTerms = paramsToString(buildCommonDownloadRecordsParams(region.fid, region.type, region.name, region.pid))
         def query = [
