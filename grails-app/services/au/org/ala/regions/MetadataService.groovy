@@ -193,8 +193,7 @@ class MetadataService {
         def response = getJSON(params)
 
         //species count
-        // SBDI: We use a legacy url. This can be reverted when the biocache is updated.
-        String url = "${BIOCACHE_SERVICE_URL}/occurrence/facets"
+        String url = "${BIOCACHE_SERVICE_URL}/occurrences/facets"
         def query = [
                 facets: 'names_and_lsid',
                 flimit: '0'
