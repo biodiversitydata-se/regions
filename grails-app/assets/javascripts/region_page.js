@@ -139,7 +139,7 @@ var region = {
         }
 
         if (timeFacet && !forChart) {
-            params.push("fq=" + timeFacet);
+            params.push("fq=" + encodeURIComponent(timeFacet));
         }
 
         // remove any empty elements
