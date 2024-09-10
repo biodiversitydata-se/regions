@@ -434,7 +434,7 @@ var RegionWidget = function (config) {
             }
             // Update taxonomy chart
             if (taxonomyChart && taxonomyWidget) {
-                taxonomyChart.updateQuery(taxonomyWidget.getQuery() + "&fq=" + region.buildTimeFacet());
+                taxonomyChart.updateQuery(taxonomyWidget.getQuery() + "&fq=" + encodeURIComponent(region.buildTimeFacet()));
             }
         },
 
@@ -692,7 +692,7 @@ var TaxonomyWidget = function (config) {
         taxonomyChartOptions = {
             query: query,
             currentState: currentState,
-            subquery: '&fq=' + region.buildTimeFacet(),
+            subquery: '&fq=' + encodeURIComponent(region.buildTimeFacet()),
             rank: "kingdom",
             width: 550,
             height: 420,
