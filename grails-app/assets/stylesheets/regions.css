@@ -289,13 +289,13 @@ li.regionLink {
 }
 
 tr.groupSelected, tr.groupSelected:hover td {
-    /*background-color: #C44D34 !important;*/
-    /*color: white;*/
+    background-color: #C44D34 !important;
+    color: white;
 }
 
 tr.speciesSelected, tr.speciesSelected:hover td {
-    /*background-color: #C44D34 !important;*/
-    /*color: white;*/
+    background-color: #C44D34 !important;
+    color: white;
 }
 
 #showMoreSpeciesButton {

@@ -154,7 +154,6 @@ function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
     var individualOptions = individualChartOptions[name] ? individualChartOptions[name] : {};
     // merge generic, individual and user options
     opts = $.extend(true, {}, opts, individualOptions, chartOptions[name]);
-    //Dumper.alert(opts);
 
     // optionally transform the data
     var xformedData = data;
@@ -292,7 +291,7 @@ function lookupEntityName(chart, table, opts, entity) {
             chart.draw(table, opts);
         },
         error: function (d, msg) {
-            alert(msg);
+
         }
     });
 }
@@ -372,9 +371,6 @@ var taxonomyChart = {
                 if (textStatus == 'timeout') {
                     alert('Sorry - the request was taking too long so it has been cancelled.');
                 }
-                if (textStatus == 'error') {
-                    alert('Sorry - the chart cannot be redrawn due to an error.');
-                }
                 if (textStatus != 'success') {
                     thisChart.cleanUp();
                 }
@@ -382,6 +378,11 @@ var taxonomyChart = {
             success: function (data) {
                 // check for errors
                 if (data != undefined && data.taxa.length > 0) {
+                    // remove any data.taxa array elements with label == ''
+                    data.taxa = $.grep(data.taxa, function (obj) {
+                        return obj.label !== '';
+                    });
+
                     // draw the chart
                     thisChart.draw(data);
                 } else {
@@ -476,7 +477,7 @@ var taxonomyChart = {
         }
         else {
             // show the instruction
-            $backLink.html($.i18n.prop("charts.click.slice")).removeClass('link');
+            $backLink.html($.i18n.prop("charts.click.slice")).removeClass('lnk');
         }
 
         // draw records link
@@ -636,7 +637,7 @@ function initTaxonTree(treeOptions) {
                         return nodes;
                     },
                     error: function (xhr, text_status) {
-                        //alert(text_status);
+
                     }
                 }
             },
