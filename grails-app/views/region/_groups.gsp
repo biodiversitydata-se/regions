@@ -16,7 +16,7 @@
                         <i class="fa fa-chevron-right"></i>
                     </g:if>
                     <g:set var="i18nName" value='${group.commonName == 'ALL_SPECIES' ? 'All Species' : group.commonName}' />
-                    <g:message code="groups.${i18nName.replaceAll("\\s+","").replaceAll(",", "")}" />
+                    <g:message code="groups.${i18nName.replaceAll("\\s+","").replaceAll(",", "")}" default="${i18nName}" />
                 </td>
             </tr>
         </g:each>
