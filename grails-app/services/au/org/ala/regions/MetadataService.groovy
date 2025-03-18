@@ -446,7 +446,7 @@ class MetadataService {
     String buildTimeFacet(String from, String to) {
         from = from.equals(WS_DATE_FROM_DEFAULT) ? "*" : from + WS_DATE_FROM_PREFIX
         to = to.equals(Calendar.getInstance().get(Calendar.YEAR)) ? "*" : to + WS_DATE_TO_PREFIX
-        "occurrence_year:[${from} TO ${to}]"
+        "occurrence_year:" + "[${from} TO ${to}]"
     }
 
     /**

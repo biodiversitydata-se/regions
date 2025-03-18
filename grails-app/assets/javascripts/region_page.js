@@ -90,9 +90,9 @@ var region = {
      * @returns [*]
      */
     buildBiocacheQuery: function (customParams, start, forChartValue) {
-        forChart = forChartValue || $("#taxonomyTab").attr('aria-expanded') === 'true';
-
         var currentState = regionWidget.getCurrentState();
+
+        forChart = forChartValue || regionWidget.getCurrentState().tab === 'taxonomyTab';
 
         var params = customParams || [];
 
@@ -138,8 +138,8 @@ var region = {
             params.push("start=" + start);
         }
 
-        if (timeFacet && !forChart) {
-            params.push("fq=" + timeFacet);
+        if (timeFacet) {
+            params.push("fq=" + encodeURIComponent(timeFacet));
         }
 
         // remove any empty elements
@@ -264,10 +264,17 @@ var RegionWidget = function (config) {
      *
      */
     var initializeTabs = function () {
-        // Initialize tabs
-        $('#explorerTabs').find('a').on('show', function (e) {
-            var tabId = $(e.target).attr('id');
-            updateState({tab: tabId, group: 'ALL_SPECIES', fq: '', subgroup: '', guid: ''});
+
+        $('#speciesTab').on('click', function(event) {
+            // reset species tab to all species, updating the map
+            if (regionWidget) regionWidget.getTimeControls().stop();
+            updateState({tab: 'speciesTab'});
+            $('#ALL_SPECIES-row i').click();
+        });
+        $('#taxonomyTab').on('click', function(event) {
+            if (regionWidget) regionWidget.getTimeControls().stop();
+            updateState({tab: 'taxonomyTab', group: 'ALL_SPECIES', fq: '', subgroup: '', guid: ''});
+            taxonomyChart.reset();
         });
         $('#' + state.tab).click();
 
@@ -338,9 +345,14 @@ var RegionWidget = function (config) {
      * Code to execute when a group is selected
      */
     var selectGroup = function (group, fq) {
+        var toggleExpansion = !regionWidget.getTimeControls().isRunning()
 
         $('.group-row').removeClass('groupSelected');
-        $("tr[parent]").hide();
+
+        if (toggleExpansion) {
+            $("tr[parent]").hide();
+        }
+
         if (group !== state.group) {
             $('#' + state.group + '-row i').removeClass('fa-chevron-down').addClass('fa-chevron-right');
         }
@@ -348,12 +360,14 @@ var RegionWidget = function (config) {
 
         var grp = $('#' + groupId + ' i');
         var isAlreadyExpanded = grp.hasClass('fa-chevron-down');
-        if (isAlreadyExpanded) {
-            $("tr[parent='" + groupId + "']").hide();
-            grp.removeClass('fa-chevron-down').addClass('fa-chevron-right');
-        } else {
-            $("tr[parent='" + groupId + "']").show();
-            grp.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+        if (toggleExpansion) {
+            if (isAlreadyExpanded) {
+                $("tr[parent='" + groupId + "']").hide();
+                grp.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+            } else {
+                $("tr[parent='" + groupId + "']").show();
+                grp.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+            }
         }
 
         // Update widget state
@@ -435,7 +449,7 @@ var RegionWidget = function (config) {
             }
             // Update taxonomy chart
             if (taxonomyChart && taxonomyWidget) {
-                taxonomyChart.updateQuery(taxonomyWidget.getQuery() + "&fq=" + region.buildTimeFacet());
+                taxonomyChart.updateQuery(taxonomyWidget.getQuery() + "&fq=" + encodeURIComponent(region.buildTimeFacet()));
             }
         },
 
@@ -653,7 +667,7 @@ var RegionTimeControls = function (config) {
         $('#timeSlider').slider('values', [regionWidget.getDefaultFromYear(), regionWidget.getDefaultToYear()]);
         stop();
         regionWidget.updateDateRange(regionWidget.getDefaultFromYear(), regionWidget.getDefaultToYear());
-        taxonomyChart.reset();
+        regionWidget.updateDateRange(regionWidget.getDefaultFromYear(), regionWidget.getDefaultToYear()); // called for a 2nd time for the use case when a "group" is select to restore the expansion toggle state
     };
 
     var updateTimeRange = function (values) {
@@ -664,6 +678,9 @@ var RegionTimeControls = function (config) {
     var _public = {
         isRunning: function () {
             return state === CONTROL_STATES.PLAYING;
+        },
+        stop: function() {
+            stop();
         }
     };
 
@@ -678,7 +695,7 @@ var TaxonomyWidget = function (config) {
     var TaxonomyWidget = function (config) {
         var currentState = regionWidget.getCurrentState();
 
-        var query = '';
+        query = '';
         $.each(region.buildBiocacheQuery([], 0, true), function (i, v) {
             if (query.length === 0) {
                 query = v
@@ -693,7 +710,7 @@ var TaxonomyWidget = function (config) {
         taxonomyChartOptions = {
             query: query,
             currentState: currentState,
-            subquery: '&fq=' + region.buildTimeFacet(),
+            subquery: '&fq=' + encodeURIComponent(region.buildTimeFacet()),
             rank: "kingdom",
             width: 550,
             height: 420,
